@@ -1,5 +1,73 @@
 #include "filters.h"
 
+void grayscale(Image &image)
+{
+    for (int i = 0; i < image.width; ++i)
+    {
+        for (int j = 0; j < image.height; ++j)
+        {
+            unsigned int avg = 0; 
+
+            for (int k = 0; k < 3; ++k)
+            {
+                avg += image(i, j, k); 
+            }
+
+            avg /= 3; 
+
+
+            image(i, j, 0) = avg;
+            image(i, j, 1) = avg;
+            image(i, j, 2) = avg;
+        }
+    }
+    cout << "\n\n-------------------------- Gray Scale is Applied -------------------------- \n\n";
+}
+
+void flipImage(Image &image)
+{
+    short choice;
+
+    cout << "\n\n-------------------------- Flip --------------------------\n\n";
+    cout << "Please choose from 1 to 2 [1]Vertical flip [2]Horizontal flip\n";
+    cin >> choice;
+    // 1 vertical flip
+    switch (choice)
+    {
+    case 1:
+    {
+        for(int i = 0; i < image.width/2;i++){
+            for(int j = 0; j <image.height;j++){
+                for(int k = 0; k <3; k++){
+                    unsigned char temp = image(i,j,k);
+                    image(i,j,k) = image(image.width-i-1,j,k);
+                    image(image.width-i-1,j,k) = temp;
+                }
+            }
+        }
+    };
+    break;
+    // 2 horizontal flip
+    case 2:
+    {
+        for (int j = 0; j < image.height / 2; j++)
+        {
+            for (int i = 0; i < image.width; i++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    unsigned char temp = image(i, j, k);
+                    image(i,j,k) = image(i,image.height-j-1,k);
+                    image(i,image.height-1-j,k) = temp;
+                }
+            }
+        }
+    }
+
+    }
+    cout << "\n\n-------------------------- Flip is Applied -------------------------- \n\n";
+}
+
 void blackAndWhite(Image& image) {
     for(int y = 0; y < image.height; ++y) {
         for(int x = 0; x < image.width; ++x) {
