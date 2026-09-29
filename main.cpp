@@ -2,7 +2,7 @@
 // 1- Youssef Ehab                  -         20242428
 // 2- Ibrahim Mohamed Hosny         -         20250006
 // 3- Seif Khaled                   -         20251205
-// 4- Youssef Saied Helmy           -         20251496                 
+// 4- Youssef Saied Helmy           -         20251496
 
 
 
@@ -31,14 +31,14 @@ void grayscale(Image &image)
     {
         for (int j = 0; j < image.height; ++j)
         {
-            unsigned int avg = 0; 
+            unsigned int avg = 0;
 
             for (int k = 0; k < 3; ++k)
             {
-                avg += image(i, j, k); 
+                avg += image(i, j, k);
             }
 
-            avg /= 3; 
+            avg /= 3;
 
 
             image(i, j, 0) = avg;
@@ -58,7 +58,7 @@ void flipImage(Image &image)
     cout << "Press 1 for vertical flip\n";
     cout << "Press 2 for horizontal flip\n";
     cin >> choice;
-    
+
     switch (choice)
     {
     case 1:
@@ -74,7 +74,7 @@ void flipImage(Image &image)
         }
     };
     break;
-    
+
     case 2:
     {
         for (int j = 0; j < image.height / 2; j++)
@@ -138,8 +138,8 @@ void rotateImage(Image& image, int angle) {
             int newX, newY;
             if(angle == 90 ) {newX = height - 1 - y; newY = x;}
             if(angle == 180) {newX = width - 1 - x; newY = height - 1 - y;}
-            if(angle == 270) {newX = y; newY = width - 1 - x;}     
-            
+            if(angle == 270) {newX = y; newY = width - 1 - x;}
+
             int r = image.getPixel(x, y, 0);
             int g = image.getPixel(x, y, 1);
             int b = image.getPixel(x, y, 2);
@@ -166,7 +166,7 @@ void rotateImage(Image& image, int angle) {
 //             int nextX = x < width - 1 ? image.getPixel(x + 1, y, 0) : image.getPixel(x - 1, y, 0);
 //             int nextY = y < height -1 ? image.getPixel(x, y + 1, 0) : image.getPixel(x, y - 1, 0);
 //             if(current != nextX || current != nextY) val = 0;
-                    
+
 //             temp.setPixel(x, y, 0, val);
 //             temp.setPixel(x, y, 1, val);
 //             temp.setPixel(x, y, 2, val);
@@ -187,7 +187,7 @@ void detectEdges(Image& image) {
             int nextYRed   = y < height - 1 ? image.getPixel(x, y + 1, 0) : image.getPixel(x, y - 1, 0);
             int nextYGreen = y < height - 1 ? image.getPixel(x, y + 1, 1) : image.getPixel(x, y - 1, 1);
             int nextYBlue  = y < height - 1 ? image.getPixel(x, y + 1, 2) : image.getPixel(x, y - 1, 2);
-            
+
             int currentAvg = (red + green + blue) / 3;
             int nextXAvg   = (nextXRed + nextXGreen + nextXBlue) / 3;
             int nextYAvg   = (nextYRed + nextYGreen + nextYBlue) / 3;
@@ -213,7 +213,7 @@ void oilPainting(Image& image) {
         for(int x = 0; x < width; x++) {
             int intensity, levels = 30, bucket, radius = 2;
             int count[256] = {0}, sumR[256] = {0}, sumG[256] = {0}, sumB[256] = {0};
-            
+
             for(int dy = -radius; dy <= radius; dy++) {
                 for (int dx = -radius; dx <= radius; dx++) {
                     int nx = min(max(x + dx, 0), width - 1);
@@ -226,7 +226,7 @@ void oilPainting(Image& image) {
                     count[bucket]++  ;
                     sumR[bucket] += r;
                     sumG[bucket] += g;
-                    sumB[bucket] += b; 
+                    sumB[bucket] += b;
                 }
             }
             int best = 0;
@@ -253,7 +253,7 @@ void oilPainting(Image& image) {
 
 //             for(int dy = -radius; dy <= radius; dy++) {
 //                 for(int dx = -radius; dx <= radius; dx++) {
-                    
+
 //                     if(dx * dx + dy * dy > radius * radius)  continue;
 
 //                     int nx = min(max(x + dx, 0), width - 1);
@@ -304,9 +304,9 @@ void saveImage() {
     cout << "Press 0 to exit save menu: \n";
     cout << "Press 1 to save in the same file: \n";
     cout << "Press 2 to save in a new file: \n";
-            
+
     cin >> choice;
-            
+
     if(choice == 1 || choice == 2) isSaved = true;
     if(choice == 0) {
         cout << "Exiting save menu";
@@ -316,15 +316,228 @@ void saveImage() {
         string newFile;
         cout << "Enter new file name: \n";
         cin >> newFile;
-                
+
         image.saveImage(newFile);
     }
 }
+void invertImage(Image& image){
+    for(int y=0;y<image.height;y++){
+        for(int x=0;x<image.width;x++){
+            int r=255-image(x,y,0);
+            int g=255-image(x,y,1);
+            int b=255-image(x,y,2);
+            image(x,y,0)=r;
+            image(x,y,1)=g;
+            image(x,y,2)=b;
+            }
+    }
+}
+
+void addFrame(Image& photo, int frame){
+    try{
+        int newWidth = photo.width + (2*frame);
+        int newHeight = photo.height + (2*frame);
+        Image border_img(newWidth,newHeight);
+        for(int w =0;w<photo.width;w++){
+            for(int h = 0;h<photo.height;h++){
+                int red = photo.getPixel(w,h,0);
+
+                int green = photo.getPixel(w,h,1);
+                int blue = photo.getPixel(w,h,2);
+
+                border_img.setPixel(w+frame,h+frame,0,red);
+                border_img.setPixel(w+frame,h+frame,1,green);
+                border_img.setPixel(w+frame,h+frame,2,blue);
+
+            }
+        }
+
+    }
+    catch(const exception& y){
+        cerr<<"ERROR!!"<<y.what();
+    }
+}
+
+void darkAndlightImage(Image& image, int percentage, int choice)
+{
+    for (int y = 0; y < image.height; y++)
+    {
+        for (int x = 0; x < image.width; x++)
+        {
+            int r = image(x, y, 0);
+            int g = image(x, y, 1);
+            int b = image(x, y, 2);
+
+            if (choice == 1)
+            {
+                r = r + (255 - r) * percentage / 100;
+                g = g + (255 - g) * percentage / 100;
+                b = b + (255 - b) * percentage / 100;
+            }
+            else if (choice == 2)
+            {
+                r = r - r * percentage / 100;
+                g = g - g * percentage / 100;
+                b = b - b * percentage / 100;
+            }
+
+            image(x, y, 0) = r;
+            image(x, y, 1) = g;
+            image(x, y, 2) = b;
+        }
+    }
+}
+  Image resizing(Image& image, int new_width, int new_height)
+{
+    Image result(new_width, new_height);
+
+    for (int y = 0; y < new_height; y++)
+    {
+        for (int x = 0; x < new_width; x++)
+        {
+            int x_original = x * image.width / new_width;
+            int y_original = y * image.height / new_height;
+
+            result(x, y, 0) = image(x_original, y_original, 0);
+            result(x, y, 1) = image(x_original, y_original, 1);
+            result(x, y, 2) = image(x_original, y_original, 2);
+        }
+    }
+
+    image = result;
+}
+
+void blurImage(Image& original) {
+    try {
+        Image blured(original.width, original.height);
+
+        for (int w = 0; w < original.width; w++) {
+            for (int h = 0; h < original.height; h++) {
+
+                int sumRed = 0, sumGreen = 0, sumBlue = 0;
+                int count = 0;
+
+                for (int dw = -3; dw <= 3; dw++) {
+                    for (int dh = -3; dh <= 3; dh++) {
+
+                        int besideW = w + dw;
+                        int besideH = h + dh;
+
+                        if (besideW >= 0 && besideW < original.width &&
+                            besideH >= 0 && besideH < original.height) {
+
+                            sumRed += original.getPixel(besideW, besideH, 0);
+                            sumGreen += original.getPixel(besideW, besideH, 1);
+                            sumBlue += original.getPixel(besideW, besideH, 2);
+
+                            count++;
+                        }
+                    }
+                }
+
+
+                blured.setPixel(w, h, 0, sumRed / count);
+                blured.setPixel(w, h, 1, sumGreen / count);
+                blured.setPixel(w, h, 2, sumBlue / count);
+            }
+        }
+
+    }
+    catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+}
+
+void tvFilter(Image& image){
+for(int y=0;y<image.height;y++){
+for(int x=0;x<image.width;x++){
+if(y%2==0){
+int R=image(x,y,0)*1.1;
+if(R > 255){
+R = 255;
+}
+int G=image(x,y,1)*1.2;
+if(G > 255){
+G = 255;
+}
+int B=image(x,y,2) * 0.7;
+image(x,y,0)=R;
+image(x,y,1)=G;
+image(x,y,2)=B;
+}
+else{
+int R=(image(x,y,0)*1.1) / 1.5;
+if(R > 255){
+R = 255;
+}
+int G=(image(x,y,1)*1.2) / 1.5;
+if(G > 255){
+G = 255;
+}
+int B=(image(x,y,2)*0.7) / 1.5;
+image(x,y,0)=R;
+image(x,y,1)=G;
+image(x,y,2)=B;
+
+}
+}
+}
+}
+void purpleFilter(string ImageName){
+    try{
+        Image img(ImageName);
+        for(int w =0 ; w< img.width ; w++){
+            for(int h = 0 ; h< img.height ; h++){
+                int red= img.getPixel(w,h,0);
+                int green = img.getPixel(w,h,1);
+                int blue= img.getPixel(w,h,2);
+                int NewRed = min(255, (int) (red*1.3));
+                int NewGreen = (int) (green*.5);
+                int NewBlue = min(255,(int) (blue*1.3));
+                img.setPixel(w,h,0,NewRed);
+                img.setPixel(w,h,1,NewGreen);
+                img.setPixel(w,h,2,NewBlue);
+            }
+        }
+    }
+    catch(const exception& y){
+        cerr<<"ERROR"<<y.what();
+    }
+}
+
+
+void infraredFilter(Image& original){
+    try{
+
+        for(int w =0; w<original.width; w++){
+            for(int h=0; h<original.height; h++){
+
+                    int red = original.getPixel(w,h,0);
+                    int green = original.getPixel(w,h,1);
+                    int blue = original.getPixel(w,h,2);
+                    int newRed=255;
+                    int newGreen= 255-green;
+                    int newBlue = 255-blue;
+                    original.setPixel(w,h,0,newRed);
+                    original.setPixel(w,h,1,newGreen);
+                    original.setPixel(w,h,2,newBlue);
+                }
+                }
+            }
+
+        catch(exception& e){
+    cerr<<"Error: "<<e.what()<<endl;
+        }
+    }
+
+
+
+
 
 int main() {
 
     while(true) {
-            
+
         cout << "============================================\n";
         cout << "       IMAGE PROCESSING PROGRAM\n";
         cout << "============================================\n";
@@ -335,8 +548,8 @@ int main() {
         cout << "Press 4 to save changes:\n";
 
         int input;
-        cin >> input;    
-            
+        cin >> input;
+
         if (input == 0) {
             cout << "Exiting program. \n";
             return 0;
@@ -353,7 +566,7 @@ int main() {
 
                 if (savingChoice == 0) {continue;}
                 else if (savingChoice == 1) {}
-                else if (savingChoice == 2) saveImage();    
+                else if (savingChoice == 2) saveImage();
         }
             cout << "Enter image name: \n";
             cin >> filename;
@@ -364,7 +577,7 @@ int main() {
         }
 
         else if (input == 2) {
-            
+
             cout << "0. Exit filter menu\n";
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
@@ -546,8 +759,8 @@ int main() {
         }
 
         else if(input == 4) {
-            
-            saveImage();            
-        } 
+
+            saveImage();
+        }
     }
 }
