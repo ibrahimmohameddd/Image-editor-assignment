@@ -1,8 +1,8 @@
-// Students:                                  IDs:
-// 1- Youssef Ehab                  -         20242428
-// 2- Ibrahim Mohamed Hosny         -         20250006
-// 3- Seif Khaled                   -         20251205
-// 4- Youssef Saied Helmy           -         20251496
+// Students:                                  IDs:                       Filters:
+// 1- Youssef Ehab Ahmed            -         20242428         -         grayScale / flipImage
+// 2- Ibrahim Mohamed Hosny         -         20250006         -         blackAndWhite / rotateImage / detectEdges / oilPainting
+// 3- Seif Khaled Ragab             -         20251205         -         invertImage / darkenAndLighten / cropImage / purpleEffect
+// 4- Youssef Saied Helmy           -         20251496         -         addFrame / imageResize / blurImage / infraredFilter
 
 
 
@@ -287,39 +287,6 @@ void oilPainting(Image& image) {
 // }
 
 
-
-
-// ---------------------------------- Program Logic. ---------------------------------------
-
-
-
-stack<Image> versions;
-string filename;
-bool isSaved = true;
-Image image;
-
-void saveImage() {
-    int choice;
-
-    cout << "Press 0 to exit save menu: \n";
-    cout << "Press 1 to save in the same file: \n";
-    cout << "Press 2 to save in a new file: \n";
-
-    cin >> choice;
-
-    if(choice == 1 || choice == 2) isSaved = true;
-    if(choice == 0) {
-        cout << "Exiting save menu";
-    }
-    else if(choice == 1) image.saveImage(filename);
-    else if(choice == 2) {
-        string newFile;
-        cout << "Enter new file name: \n";
-        cin >> newFile;
-
-        image.saveImage(newFile);
-    }
-}
 void invertImage(Image& image){
     for(int y=0;y<image.height;y++){
         for(int x=0;x<image.width;x++){
@@ -333,30 +300,6 @@ void invertImage(Image& image){
     }
 }
 
-void addFrame(Image& photo, int frame){
-    try{
-        int newWidth = photo.width + (2*frame);
-        int newHeight = photo.height + (2*frame);
-        Image border_img(newWidth,newHeight);
-        for(int w =0;w<photo.width;w++){
-            for(int h = 0;h<photo.height;h++){
-                int red = photo.getPixel(w,h,0);
-
-                int green = photo.getPixel(w,h,1);
-                int blue = photo.getPixel(w,h,2);
-
-                border_img.setPixel(w+frame,h+frame,0,red);
-                border_img.setPixel(w+frame,h+frame,1,green);
-                border_img.setPixel(w+frame,h+frame,2,blue);
-
-            }
-        }
-
-    }
-    catch(const exception& y){
-        cerr<<"ERROR!!"<<y.what();
-    }
-}
 
 void darkAndlightImage(Image& image, int percentage, int choice)
 {
@@ -387,7 +330,95 @@ void darkAndlightImage(Image& image, int percentage, int choice)
         }
     }
 }
-  Image resizing(Image& image, int new_width, int new_height)
+
+
+void tvFilter(Image& image){
+    for(int y=0;y<image.height;y++){
+        for(int x=0;x<image.width;x++){
+        if(y%2==0){
+            int R=image(x,y,0)*1.1;
+            if(R > 255){
+            R = 255;
+            }
+            int G=image(x,y,1)*1.2;
+            if(G > 255){
+                G = 255;
+            }
+            int B=image(x,y,2) * 0.7;
+            image(x,y,0)=R;
+            image(x,y,1)=G;
+            image(x,y,2)=B;
+        }
+    else{
+        int R=(image(x,y,0)*1.1) / 1.5;
+        if(R > 255){
+        R = 255;
+    }
+    int G=(image(x,y,1)*1.2) / 1.5;
+    if(G > 255){
+        G = 255;
+    }
+    int B=(image(x,y,2)*0.7) / 1.5;
+    image(x,y,0)=R;
+    image(x,y,1)=G;
+    image(x,y,2)=B;
+    
+    }
+    }
+    }
+}
+
+
+void purpleFilter(string ImageName){
+    try{
+        Image img(ImageName);
+        for(int w =0 ; w< img.width ; w++){
+            for(int h = 0 ; h< img.height ; h++){
+                int red= img.getPixel(w,h,0);
+                int green = img.getPixel(w,h,1);
+                int blue= img.getPixel(w,h,2);
+                int NewRed = min(255, (int) (red*1.3));
+                int NewGreen = (int) (green*.5);
+                int NewBlue = min(255,(int) (blue*1.3));
+                img.setPixel(w,h,0,NewRed);
+                img.setPixel(w,h,1,NewGreen);
+                img.setPixel(w,h,2,NewBlue);
+            }
+        }
+    }
+    catch(const exception& y){
+        cerr<<"ERROR"<<y.what();
+    }
+}
+
+
+void addFrame(Image& photo, int frame){
+    try{
+        int newWidth = photo.width + (2*frame);
+        int newHeight = photo.height + (2*frame);
+        Image border_img(newWidth,newHeight);
+        for(int w =0;w<photo.width;w++){
+            for(int h = 0;h<photo.height;h++){
+                int red = photo.getPixel(w,h,0);
+
+                int green = photo.getPixel(w,h,1);
+                int blue = photo.getPixel(w,h,2);
+
+                border_img.setPixel(w+frame,h+frame,0,red);
+                border_img.setPixel(w+frame,h+frame,1,green);
+                border_img.setPixel(w+frame,h+frame,2,blue);
+
+            }
+        }
+
+    }
+    catch(const exception& y){
+        cerr<<"ERROR!!"<<y.what();
+    }
+}
+
+
+Image resizing(Image& image, int new_width, int new_height)
 {
     Image result(new_width, new_height);
 
@@ -406,6 +437,7 @@ void darkAndlightImage(Image& image, int percentage, int choice)
 
     image = result;
 }
+
 
 void blurImage(Image& original) {
     try {
@@ -448,63 +480,6 @@ void blurImage(Image& original) {
     }
 }
 
-void tvFilter(Image& image){
-for(int y=0;y<image.height;y++){
-for(int x=0;x<image.width;x++){
-if(y%2==0){
-int R=image(x,y,0)*1.1;
-if(R > 255){
-R = 255;
-}
-int G=image(x,y,1)*1.2;
-if(G > 255){
-G = 255;
-}
-int B=image(x,y,2) * 0.7;
-image(x,y,0)=R;
-image(x,y,1)=G;
-image(x,y,2)=B;
-}
-else{
-int R=(image(x,y,0)*1.1) / 1.5;
-if(R > 255){
-R = 255;
-}
-int G=(image(x,y,1)*1.2) / 1.5;
-if(G > 255){
-G = 255;
-}
-int B=(image(x,y,2)*0.7) / 1.5;
-image(x,y,0)=R;
-image(x,y,1)=G;
-image(x,y,2)=B;
-
-}
-}
-}
-}
-void purpleFilter(string ImageName){
-    try{
-        Image img(ImageName);
-        for(int w =0 ; w< img.width ; w++){
-            for(int h = 0 ; h< img.height ; h++){
-                int red= img.getPixel(w,h,0);
-                int green = img.getPixel(w,h,1);
-                int blue= img.getPixel(w,h,2);
-                int NewRed = min(255, (int) (red*1.3));
-                int NewGreen = (int) (green*.5);
-                int NewBlue = min(255,(int) (blue*1.3));
-                img.setPixel(w,h,0,NewRed);
-                img.setPixel(w,h,1,NewGreen);
-                img.setPixel(w,h,2,NewBlue);
-            }
-        }
-    }
-    catch(const exception& y){
-        cerr<<"ERROR"<<y.what();
-    }
-}
-
 
 void infraredFilter(Image& original){
     try{
@@ -532,6 +507,38 @@ void infraredFilter(Image& original){
 
 
 
+// ---------------------------------- Program Logic. ---------------------------------------
+
+
+
+stack<Image> versions;
+string filename;
+bool isSaved = true;
+Image image;
+
+
+void saveImage() {
+    int choice;
+
+    cout << "Press 0 to exit save menu: \n";
+    cout << "Press 1 to save in the same file: \n";
+    cout << "Press 2 to save in a new file: \n";
+
+    cin >> choice;
+
+    if(choice == 1 || choice == 2) isSaved = true;
+    if(choice == 0) {
+        cout << "Exiting save menu";
+    }
+    else if(choice == 1) image.saveImage(filename);
+    else if(choice == 2) {
+        string newFile;
+        cout << "Enter new file name: \n";
+        cin >> newFile;
+
+        image.saveImage(newFile);
+    }
+}
 
 
 int main() {
