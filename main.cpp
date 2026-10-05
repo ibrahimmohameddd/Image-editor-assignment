@@ -22,33 +22,23 @@ using namespace std;
 
 
 // ----------------------- Filters Functions. ----------------------------------
-void sunlightFilter(Image &img)
+void sunLightFilter(Image &img)
 {
     for (int i = 0; i < img.width; i++)
     {
         for (int j = 0; j < img.height; j++)
         {
-            for (int k = 0; k < 3; k++)
-            {
-                if (k == 0)
-                {
-                    int newValue = (img(i,j,k)* 1.25) + 15;
-                    newValue = newValue > 255? 255: newValue;
-                    img(i,j,k) = newValue;
-                }
-                else if (k==1)
-                {
+                int newValue = (img(i, j, 0) * 1.25) + 15;
+                newValue = newValue > 255 ? 255 : newValue;
+                img(i, j, 0) = newValue;
 
-                    int newValue = (img(i,j,k)* 1.05); 
-                    newValue = newValue > 255? 255: newValue;
-                    img(i,j,k) = newValue;
-                }
-                else{
-                    int newValue = (img(i,j,k)* 0.9);
-                    newValue = newValue > 255? 255: newValue;
-                    img(i,j,k) = newValue;
-                }
-            }
+                newValue = img(i, j, 1) * 1.05;
+                newValue = newValue > 255 ? 255 : newValue;
+                img(i, j, 1) = newValue;
+
+                newValue = img(i, j, 2) * 0.9;
+                newValue = newValue > 255 ? 255 : newValue;
+                img(i, j, 2) = newValue;
         }
     }
 }
