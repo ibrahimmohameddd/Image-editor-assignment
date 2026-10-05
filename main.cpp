@@ -22,7 +22,75 @@ using namespace std;
 
 
 // ----------------------- Filters Functions. ----------------------------------
+void sunlightFilter(Image &img)
+{
+    for (int i = 0; i < img.width; i++)
+    {
+        for (int j = 0; j < img.height; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                if (k == 0)
+                {
+                    int newValue = (img(i,j,k)* 1.25) + 15;
+                    newValue = newValue > 255? 255: newValue;
+                    img(i,j,k) = newValue;
+                }
+                else if (k==1)
+                {
 
+                    int newValue = (img(i,j,k)* 1.05); 
+                    newValue = newValue > 255? 255: newValue;
+                    img(i,j,k) = newValue;
+                }
+                else{
+                    int newValue = (img(i,j,k)* 0.9);
+                    newValue = newValue > 255? 255: newValue;
+                    img(i,j,k) = newValue;
+                }
+            }
+        }
+    }
+}
+
+void mergeImages(Image &img1, Image img2)
+{
+    try
+    {
+        int width = min(img1.width, img2.width);
+        int height = min(img1.height, img2.height);
+        Image mergeImages(width, height);
+        {
+            for (int w = 0; w < width; w++)
+            {
+                for (int h = 0; h < height; h++)
+                {
+                    int red1 = img1.getPixel(w, h, 0);
+                    int red2 = img2.getPixel(w, h, 0);
+
+                    int green1 = img1.getPixel(w, h, 1);
+                    int green2 = img2.getPixel(w, h, 1);
+
+                    int blue1 = img1.getPixel(w, h, 2);
+                    int blue2 = img2.getPixel(w, h, 2);
+
+                    int newRed = (int)(red1 + red2) / 2;
+                    int newGreen = (int)(green1 + green2) / 2;
+                    int newBlue = (int)(blue1 + blue2) / 2;
+
+                    mergeImages.setPixel(w, h, 0, newRed);
+                    mergeImages.setPixel(w, h, 1, newGreen);
+                    mergeImages.setPixel(w, h, 2, newBlue);
+                }
+            }
+        }
+        img1 = mergeImages;
+    }
+    catch (const exception &y)
+    {
+        cerr << "ERROR!!!" << y.what();
+    }
+}
 
 
 void grayscale(Image &image)
